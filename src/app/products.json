@@ -2,6 +2,7 @@
   "products": [
     {
       "name": "Dining Chair",
+      "price": 50,
       "contain_articles": [
         {
           "art_id": "1",
@@ -19,6 +20,7 @@
     },
     {
       "name": "Dinning Table",
+      "price": 200,
       "contain_articles": [
         {
           "art_id": "1",
