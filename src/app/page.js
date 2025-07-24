@@ -1,7 +1,11 @@
 "use client";
 import { useState, useEffect } from 'react';
 import inventoryData from './inventory.json';
-import productsData from './products.json';
+import InventoryList from './components/InventoryList';
+import InventoryForm from './components/InventoryForm';
+import ProductsList from './components/ProductsList';
+import MoneyBar from './components/MoneyBar';
+import Toast from './components/Toast';
 
 export default function Home() {
   const [inventory, setInventory] = useState(inventoryData.inventory);
@@ -20,11 +24,14 @@ export default function Home() {
 
   const handleAdd = (art_id) => {
     setInventory(prev =>
-      prev.map(item =>
-        item.art_id === art_id
-          ? { ...item, stock: String(Number(item.stock) + 1) }
-          : item
-      )
+      prev.map(item => {
+        if (item.art_id === art_id && Number(item.stock) > 0) {
+          setShowToast(true);
+          setTimeout(() => setShowToast(false), 2000);
+          return { ...item, stock: String(Number(item.stock) + 1) };
+        }
+        return item;
+      })
     );
   };
 
@@ -58,7 +65,6 @@ export default function Home() {
   };
 
   const canBuyProduct = (product) => {
-    // Check inventory and money
     const enoughParts = product.contain_articles.every(part => {
       const inv = inventory.find(item => item.art_id === part.art_id);
       return inv && Number(inv.stock) >= Number(part.amount_of);
@@ -90,103 +96,22 @@ export default function Home() {
   return (
     <>
       <h1>Warehouse software</h1>
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-        <span style={{ fontWeight: 'bold', fontSize: '18px' }}>Money: ${money}</span>
-        <button
-          className='add-btn'
-          onClick={handleDeposit}
-        >
-          Deposit $100
-        </button>
-      </div>
-      <div className="area">
-        <h2>Inventory :</h2>
-        <ul>
-          {inventory.map(item => (
-            <li key={item.art_id}>
-              {item.name} (ID: {item.art_id}) - Stock: {item.stock}
-              <button className="add-btn" onClick={() => handleAdd(item.art_id)}>Add</button>
-            </li>
-          ))}
-        </ul>
-      </div>
-
+      <MoneyBar money={money} handleDeposit={handleDeposit} />
+      <InventoryList inventory={inventory} handleAdd={handleAdd} />
       <br />
-      <div className="area">
-        <h2>Add New Item</h2>
-        <form onSubmit={handleFormSubmit} style={{ marginTop: '32px' }}>
-          <input
-            type="text"
-            name="art_id"
-            placeholder="ID"
-            value={form.art_id}
-            onChange={handleFormChange}
-            style={{ marginRight: '8px' }}
-          />
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={form.name}
-            onChange={handleFormChange}
-            style={{ marginRight: '8px' }}
-          />
-          <input
-            type="number"
-            name="stock"
-            placeholder="Number"
-            value={form.stock}
-            onChange={handleFormChange}
-            style={{ marginRight: '8px' }}
-          />
-          <button className='add-btn' type="submit" disabled={!isFormValid}>Add</button>
-        </form>
-      </div>
-
+      <InventoryForm
+        form={form}
+        handleFormChange={handleFormChange}
+        handleFormSubmit={handleFormSubmit}
+        isFormValid={isFormValid}
+      />
       <br />
-      <div className="area">
-        <h2>Products to Sell</h2>
-        <ul>
-          {productsData.products.map(product => (
-            <li key={product.name} style={{ marginBottom: '24px' }}>
-              <strong>{product.name}</strong> <span style={{ marginLeft: '12px', color: '#555' }}>${product.price || 0}</span>
-              <ul>
-                {product.contain_articles.map(part => {
-                  const inv = inventory.find(item => item.art_id === part.art_id);
-                  return (
-                    <li key={part.art_id}>
-                      {inv ? inv.name : 'Unknown'} (ID: {part.art_id}) - Needed: {part.amount_of} / In Stock: {inv ? inv.stock : 0}
-                    </li>
-                  );
-                })}
-              </ul>
-              <button
-                className="add-btn"
-                style={{ marginLeft: '0', marginTop: '8px' }}
-                disabled={!canBuyProduct(product)}
-                onClick={() => handleBuyProduct(product)}
-              >
-                Buy
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {showToast && (
-        <div style={{
-          position: 'fixed',
-          bottom: '32px',
-          right: '32px',
-          background: '#fff',
-          color: '#333',
-          borderRadius: '8px',
-          padding: '12px 24px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-        }}>
-          Added!
-        </div>
-      )}
+      <ProductsList
+        inventory={inventory}
+        canBuyProduct={canBuyProduct}
+        handleBuyProduct={handleBuyProduct}
+      />
+      <Toast showToast={showToast} />
     </>
   );
 }

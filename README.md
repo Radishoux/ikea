@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Warehouse Software Assignment
+
+## Overview
+
+This project is a simple warehouse management application built with [Next.js](https://nextjs.org).
+It demonstrates basic inventory and product management, including selling products and updating stock, as described in the assignment.
+
+## Features
+
+- **Inventory Management:**
+  Loads articles from `inventory.json`, each with an ID, name, and stock.
+- **Product Management:**
+  Loads products from `products.json`, each with a name, price, and required articles/quantities.
+- **Sell Products:**
+  Displays all products and allows selling if enough inventory is available. Selling updates the inventory and deducts money.
+- **Add Inventory:**
+  Add new articles or increase stock of existing ones via a form.
+- **Money Management:**
+  Tracks available money, deducts on product sale, and allows depositing more.
+
+## How It Works
+
+- **Inventory and Products** are loaded from static JSON files.
+- **Product Availability** is calculated based on current inventory.
+- **Selling a Product** subtracts required articles from inventory and deducts the product price from money.
+- **Form for Inventory** allows adding new items or increasing stock for existing ones.
+- **UI Feedback** includes disabled buy buttons when stock/money is insufficient and a toast notification when inventory is added.
+
+## Pros & Cons
+
+### Pros
+
+- **Simplicity:**
+  The code is easy to scan and understand, with clear naming and separation of concerns.
+- **Readability:**
+  React hooks and functional components make the logic straightforward.
+- **Maintainability:**
+  State management is local and easy to extend.
+- **Testability:**
+  Logic is mostly contained in pure functions and handlers, making it easy to test.
+
+### Cons
+
+- **Persistence:**
+  Inventory and product changes are not saved to disk or a database; they exist only in memory for the session.
+- **Scalability:**
+  For production, a backend API and database would be needed for real persistence and multi-user support.
+- **Validation:**
+  Basic validation is implemented, but more robust checks (e.g., duplicate IDs, negative stock) could be added.
+
+## Future Considerations
+
+- **Backend Integration:**
+  Add API routes and a database for persistent storage and multi-user support.
+- **Testing:**
+  Add unit and integration tests for business logic and UI.
+- **UI/UX:**
+  Improve design and accessibility, add error messages and confirmations.
+- **Edge Cases:**
+  Handle edge cases like concurrent updates, invalid data, and large inventories.
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies:
+    ```bash
+    npm install
+    ```
+2. Run the development server:
+    ```bash
+    npm run dev
+    ```
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## File Structure
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- `app/page.js` — Main application logic and UI
+- `app/inventory.json` — Inventory data
+- `app/products.json` — Product data
+- `app/globals.css` — Global styles
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Picking Up This Code
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- All main logic is in `app/page.js`.
+- Inventory and products are loaded from JSON files in `app/`.
+- UI is built with React and Next.js app directory.
+- Styles are in `app/globals.css`.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Feel free to reach out
